@@ -1,24 +1,22 @@
-import logo from './logo.svg';
-import './App.css';
+import { Box, Container } from 'theme-ui';
+import HeaderContent from './components/HeaderContent';
+import TodoListInfoBar from './components/TodoListInfoBar';
+import TodoCreator from './components/TodoCreator';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Container>
+      <Box
+        p={3}
+        bg="muted"
+        variant="radii"
+        sx={{ mx: [0, 0, 2], mt: [5, 4, 2] }}
+      >
+        <HeaderContent />
+        <TodoCreator />
+      </Box>
+      <TodoListInfoBar />
+    </Container>
   );
 }
 
