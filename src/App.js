@@ -1,22 +1,23 @@
-import { Box, Container } from 'theme-ui';
-import HeaderContent from './components/HeaderContent';
-import TodoListInfoBar from './components/TodoListInfoBar';
-import TodoCreator from './components/TodoCreator';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import NotFound from './pages/NotFound';
+import TodoItemPage from './pages/TodoItemPage';
+import TodoListPage from './pages/TodoListPage';
 
 function App() {
   return (
-    <Container>
-      <Box
-        p={3}
-        bg="muted"
-        variant="radii"
-        sx={{ mx: [0, 0, 2], mt: [5, 4, 2] }}
-      >
-        <HeaderContent />
-        <TodoCreator />
-      </Box>
-      <TodoListInfoBar />
-    </Container>
+    <Router>
+      <Switch>
+        <Route exact path="/todo/:id">
+          <TodoItemPage />
+        </Route>
+        <Route exact path="/">
+          <TodoListPage />
+        </Route>
+        <Route>
+          <NotFound />
+        </Route>
+      </Switch>
+    </Router>
   );
 }
 
