@@ -1,7 +1,35 @@
 import React from 'react';
 import { Box, Flex, Input, Paragraph, Switch } from 'theme-ui';
+import { selector, useRecoilState, useRecoilValue } from 'recoil';
+import { completedTodoVisibility, todoListAtom } from '../atoms';
+
+const todoCompletedCounter = selector({
+  key: 'todoCompletedCounter',
+  get: ({ get }) => {
+    const list = get(todoListAtom);
+
+    const completed = list.reduce(
+      (count, todo) => (todo.completed ? count + 1 : count),
+      0
+    );
+
+    return {
+      completed: completed,
+      uncompleted: list.length - completed,
+    };
+  },
+});
 
 const TodoListInfoBar = () => {
+  const { completed, uncompleted } = useRecoilValue(todoCompletedCounter);
+  const [completedVisibility, setCompletedVisibility] = useRecoilState(
+    completedTodoVisibility
+  );
+
+  const handleToggleCompletedVisibility = () => {
+    setCompletedVisibility((prevState) => !prevState);
+  };
+
   return (
     <Box
       py={3}
@@ -17,9 +45,9 @@ const TodoListInfoBar = () => {
           }}
         >
           <Paragraph variant="small" mr={3}>
-            Completed: 10
+            Completed: {completed}
           </Paragraph>
-          <Paragraph variant="small">Uncompleted: 2</Paragraph>
+          <Paragraph variant="small">Uncompleted: {uncompleted}</Paragraph>
         </Flex>
 
         <Flex
@@ -34,7 +62,11 @@ const TodoListInfoBar = () => {
             Hide completed
           </Paragraph>
           <Box mx={2}>
-            <Switch id="hide-completed" />
+            <Switch
+              id="hide-completed"
+              value={completedVisibility}
+              onChange={handleToggleCompletedVisibility}
+            />
           </Box>
           <Box>
             <Input placeholder="Search..." />

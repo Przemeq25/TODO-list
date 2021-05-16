@@ -1,33 +1,50 @@
-import { Box } from '@theme-ui/components';
-import React from 'react';
+import { Box, Heading } from '@theme-ui/components';
+import React, { useEffect } from 'react';
+import { selector, useRecoilState, useRecoilValue } from 'recoil';
 import TodoItem from './TodoItem';
+import { completedTodoVisibility, todoListAtom } from '../atoms';
+import { fetchTodos } from '../services/todos';
 
-const data = [
-  {
-    id: 176,
-    user_id: 123,
-    title: 'Voluptas quidem patria fugiat cupio tergum qui coadunatio solutio.',
-    completed: true,
-    created_at: '2021-05-13T03:50:05.967+05:30',
-    updated_at: '2021-05-13T03:50:05.967+05:30',
+const fetchTodosSelector = selector({
+  key: 'fetchTodosSelector',
+  get: async () => {
+    try {
+      const res = await fetchTodos();
+      const { data } = await res.json();
+      return data;
+    } catch (error) {
+      return [];
+    }
   },
-  {
-    id: 177,
-    user_id: 123,
-    title: 'Voluptas quidem patria fugiat cupio tergum qui coadunatio solutio.',
-    completed: false,
-    created_at: '2021-05-13T03:50:05.967+05:30',
-    updated_at: '2021-05-13T03:50:05.967+05:30',
-  },
-];
+});
 
 const TodoList = () => {
+  const [todoList, setTodoList] = useRecoilState(todoListAtom);
+  const fetchTodo = useRecoilValue(fetchTodosSelector);
+  const showCompleted = useRecoilValue(completedTodoVisibility);
+
+  useEffect(() => {
+    setTodoList(fetchTodo);
+  }, [fetchTodo, setTodoList]);
+
   return (
-    <Box>
-      {data.map((item) => (
-        <TodoItem {...item} key={item.id} />
-      ))}
-    </Box>
+    <>
+      {!todoList.length ? (
+        <Heading
+          sx={{ color: 'gray', fontSize: 4, textAlign: 'center', mt: 4 }}
+        >
+          No data to display
+        </Heading>
+      ) : (
+        <Box as="ul" sx={{ listStyle: 'none', pl: 0 }}>
+          {todoList.map((item) =>
+            showCompleted || !item.completed ? (
+              <TodoItem {...item} key={item.id} />
+            ) : null
+          )}
+        </Box>
+      )}
+    </>
   );
 };
 

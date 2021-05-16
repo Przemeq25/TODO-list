@@ -21,6 +21,7 @@ export const theme = {
     secondary: '#30c',
     gray: '#8E8E8E',
     muted: '#191919',
+    error: '#ff0000',
   },
   styles: {
     root: {
