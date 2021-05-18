@@ -4,7 +4,7 @@ export const theme = {
     body: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif',
     heading: 'inherit',
   },
-  fontSizes: [10, 12, 14, 16, 36],
+  fontSizes: [10, 12, 14, 16, 36, 180],
   fontWeights: {
     body: 400,
     heading: 600,
@@ -22,6 +22,7 @@ export const theme = {
     gray: '#8E8E8E',
     muted: '#191919',
     error: '#ff0000',
+    success: '#05c118',
   },
   styles: {
     root: {
@@ -48,6 +49,7 @@ export const theme = {
       fontFamily: 'body',
       fontWeight: 'body',
       lineHeight: 'body',
+      fontSize: 3,
     },
     hr: {
       margin: 0,
@@ -112,6 +114,7 @@ export const theme = {
   forms: {
     textarea: {
       resize: 'none',
+      textTransform: 'capitalize',
     },
     input: {
       fontSize: 1,
@@ -121,6 +124,21 @@ export const theme = {
       color: 'primary',
       m: 0,
       cursor: 'pointer',
+    },
+    switch: {
+      mr: 0,
+    },
+  },
+  alerts: {
+    success: {
+      color: 'text',
+      bg: 'success',
+      fontWeight: 'body',
+    },
+    error: {
+      color: 'text',
+      bg: 'error',
+      fontWeight: 'body',
     },
   },
   breakpoints: [

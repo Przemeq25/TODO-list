@@ -1,10 +1,11 @@
+import { userId, bearerToken } from '../config';
+
 const appUrl = 'https://gorest.co.in/public-api';
-const userId = 54;
-const bearerToken =
-  'eb255bf441c446879bf4112fa69df17e640fc7edd6e12180032d58614faec968';
 
 export const fetchTodos = (query = '') =>
   fetch(`${appUrl}/users/${userId}/todos${query}`);
+
+export const fetchSingleTodo = (id) => fetch(`${appUrl}/todos/${id}`);
 
 export const postTodo = (title, completedStatus = false) =>
   fetch(`${appUrl}/users/${userId}/todos`, {

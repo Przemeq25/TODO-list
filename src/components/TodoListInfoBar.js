@@ -1,20 +1,21 @@
 import React from 'react';
-import { Box, Flex, Input, Paragraph, Switch } from 'theme-ui';
+import { Box, Flex, Paragraph, Switch } from 'theme-ui';
 import { selector, useRecoilState, useRecoilValue } from 'recoil';
 import { completedTodoVisibility, todoListAtom } from '../atoms';
+import TodoSearch from './TodoSearch';
 
 const todoCompletedCounter = selector({
   key: 'todoCompletedCounter',
   get: ({ get }) => {
     const list = get(todoListAtom);
+    const isCompletedVisible = get(completedTodoVisibility);
 
     const completed = list.reduce(
       (count, todo) => (todo.completed ? count + 1 : count),
       0
     );
-
     return {
-      completed: completed,
+      completed: isCompletedVisible ? completed : 0,
       uncompleted: list.length - completed,
     };
   },
@@ -61,16 +62,14 @@ const TodoListInfoBar = () => {
           <Paragraph htmlFor="hide-completed" variant="small">
             Hide completed
           </Paragraph>
-          <Box mx={2}>
+          <Box ml={2}>
             <Switch
               id="hide-completed"
               value={completedVisibility}
               onChange={handleToggleCompletedVisibility}
             />
           </Box>
-          <Box>
-            <Input placeholder="Search..." />
-          </Box>
+          <TodoSearch />
         </Flex>
       </Flex>
     </Box>

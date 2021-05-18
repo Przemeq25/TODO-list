@@ -1,22 +1,17 @@
 import React from 'react';
 import { Box, Container } from 'theme-ui';
-import HeaderContent from '../components/HeaderContent';
-import TodoItemInfoBar from '../components/TodoItemInfoBar';
+import HeaderWrapper from '../components/HeaderWrapper';
 import TodoCreator from '../components/TodoCreator';
+import TodoItemInfoBox from '../components/TodoItemInfoBox';
 
 const TodoItemPage = () => {
   return (
     <Container>
-      <Box
-        p={3}
-        bg="muted"
-        variant="radii"
-        sx={{ mx: [0, 0, 2], mt: [5, 4, 2] }}
-      >
-        <HeaderContent />
-        <TodoCreator />
+      <HeaderWrapper edit />
+      <TodoItemInfoBox />
+      <Box mx={3}>
+        <TodoCreator edit />
       </Box>
-      <TodoItemInfoBar />
     </Container>
   );
 };

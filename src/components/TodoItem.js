@@ -9,54 +9,71 @@ import {
 import { ReactComponent as DeleteIcon } from '../assets/delete.svg';
 import { ReactComponent as EditIcon } from '../assets/edit.svg';
 import React from 'react';
-import { useRecoilCallback, useRecoilValue } from 'recoil';
-import { todoListAtom } from '../atoms';
+import { useSetRecoilState } from 'recoil';
+import { alertAtom, todoListAtom } from '../atoms';
 import { deleteTodo, updateTodo } from '../services/todos';
 import { useHistory } from 'react-router-dom';
+import { replaceArrayItem } from '../utils/replaceArrayItem';
 
 const TodoItem = ({ id, title, completed }) => {
-  const todoList = useRecoilValue(todoListAtom);
-
+  const setNewTodos = useSetRecoilState(todoListAtom);
+  const setAlert = useSetRecoilState(alertAtom);
   const history = useHistory();
 
-  const deleteItem = useRecoilCallback(({ set }) => async (id) => {
+  const deleteItem = async (id) => {
     try {
       const res = await deleteTodo(id);
-      const { code } = await res.json();
+      const { code, data } = await res.json();
 
       if (code === 204) {
-        set(
-          todoListAtom,
-          todoList.filter((item) => item.id !== id)
-        );
+        setNewTodos((oldTodos) => oldTodos.filter((item) => item.id !== id));
+        setAlert({
+          isOpen: true,
+          text: 'Todo was successfully deleted',
+          timeout: 2000,
+          type: 'success',
+        });
       } else {
-        throw Error;
+        throw new Error(data.message);
       }
-    } catch {
-      //TODO some action here
+    } catch (e) {
+      setAlert({
+        isOpen: true,
+        text: `Ups... ${e.message}. Try again or refresh page`,
+        timeout: 2000,
+        type: 'error',
+      });
     }
-  });
+  };
 
-  const updateStatusItem = useRecoilCallback(
-    ({ set }) =>
-      async (id, title, completed) => {
-        try {
-          const res = await updateTodo(id, title, !completed);
-          const { code, data } = await res.json();
+  const updateStatusItem = async (id, title, completed) => {
+    try {
+      const res = await updateTodo(id, title, completed);
+      const { code, data } = await res.json();
 
-          if (code === 200) {
-            const index = todoList.findIndex((el) => el.id === data.id);
-            const newTodoList = [...todoList];
-            newTodoList.splice(index, 1, data);
-            set(todoListAtom, newTodoList);
-          } else {
-            throw Error;
-          }
-        } catch {
-          //TODO some action here
-        }
+      if (code === 200) {
+        setNewTodos((oldTodos) => {
+          const newTodoList = replaceArrayItem(oldTodos, data);
+          return newTodoList;
+        });
+        setAlert({
+          isOpen: true,
+          text: 'Todo was successfully updated',
+          timeout: 2000,
+          type: 'success',
+        });
+      } else {
+        throw new Error(data.message);
       }
-  );
+    } catch (e) {
+      setAlert({
+        isOpen: true,
+        text: `Ups... ${e.message}. Try again or refresh page`,
+        timeout: 2000,
+        type: 'error',
+      });
+    }
+  };
 
   return (
     <Box mb={2} p={3} bg="muted" variant="radii" as="li">
@@ -64,7 +81,7 @@ const TodoItem = ({ id, title, completed }) => {
         <Label mr={3} sx={{ width: 'inherit' }}>
           <Checkbox
             checked={completed}
-            onChange={() => updateStatusItem(id, title, completed)}
+            onChange={() => updateStatusItem(id, title, !completed)}
           />
         </Label>
         <Paragraph
@@ -79,7 +96,11 @@ const TodoItem = ({ id, title, completed }) => {
           {title}
         </Paragraph>
         <Box>
-          <IconButton onClick={() => history.push(`todo/${id}`)}>
+          <IconButton
+            onClick={() => {
+              history.push(`todo/${id}`);
+            }}
+          >
             <EditIcon />
           </IconButton>
           <IconButton onClick={() => deleteItem(id)}>

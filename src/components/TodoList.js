@@ -1,49 +1,61 @@
-import { Box, Heading } from '@theme-ui/components';
-import React, { useEffect } from 'react';
-import { selector, useRecoilState, useRecoilValue } from 'recoil';
+import { Box, Flex, Heading, Spinner } from '@theme-ui/components';
+import React, { useEffect, useState } from 'react';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import TodoItem from './TodoItem';
-import { completedTodoVisibility, todoListAtom } from '../atoms';
+import {
+  completedTodoVisibility,
+  todoListAtom,
+  todoSearchAtom,
+} from '../atoms';
 import { fetchTodos } from '../services/todos';
 
-const fetchTodosSelector = selector({
-  key: 'fetchTodosSelector',
-  get: async () => {
-    try {
-      const res = await fetchTodos();
-      const { data } = await res.json();
-      return data;
-    } catch (error) {
-      return [];
-    }
-  },
-});
-
 const TodoList = () => {
+  const [isFetching, setIsFetching] = useState(true);
   const [todoList, setTodoList] = useRecoilState(todoListAtom);
-  const fetchTodo = useRecoilValue(fetchTodosSelector);
   const showCompleted = useRecoilValue(completedTodoVisibility);
+  const phrase = useRecoilValue(todoSearchAtom);
 
   useEffect(() => {
-    setTodoList(fetchTodo);
-  }, [fetchTodo, setTodoList]);
+    const delay = !phrase.length ? 0 : 700;
+
+    const fetchData = setTimeout(async () => {
+      try {
+        setIsFetching(true);
+        const query = phrase.length ? `?title=${phrase}` : '';
+        const res = await fetchTodos(query);
+        const { data } = await res.json();
+        setTodoList(data);
+        setIsFetching(false);
+      } catch (error) {
+        setIsFetching(false);
+        return [];
+      }
+    }, delay);
+    return () => clearTimeout(fetchData);
+  }, [setTodoList, phrase]);
+
+  if (isFetching)
+    return (
+      <Flex sx={{ justifyContent: 'center', mt: 3 }}>
+        <Spinner />
+      </Flex>
+    );
+  if (!todoList.length)
+    return (
+      <Heading sx={{ textAlign: 'center', mt: 3, color: 'gray', fontSize: 4 }}>
+        No data to display
+      </Heading>
+    );
 
   return (
     <>
-      {!todoList.length ? (
-        <Heading
-          sx={{ color: 'gray', fontSize: 4, textAlign: 'center', mt: 4 }}
-        >
-          No data to display
-        </Heading>
-      ) : (
-        <Box as="ul" sx={{ listStyle: 'none', pl: 0 }}>
-          {todoList.map((item) =>
-            showCompleted || !item.completed ? (
-              <TodoItem {...item} key={item.id} />
-            ) : null
-          )}
-        </Box>
-      )}
+      <Box as="ul" sx={{ listStyle: 'none', pl: 0 }}>
+        {todoList.map((item) =>
+          !item.completed || showCompleted ? (
+            <TodoItem {...item} key={item.id} />
+          ) : null
+        )}
+      </Box>
     </>
   );
 };
