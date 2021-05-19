@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Checkbox,
@@ -7,9 +8,8 @@ import {
   Paragraph,
   Spinner,
 } from '@theme-ui/components';
-import React, { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router';
-import { useRecoilState, useResetRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { alertAtom, singleTodoAtom, todoCreatorAtom } from '../atoms';
 import { fetchSingleTodo } from '../services/todos';
 import { convertDate } from '../utils/dateConverter';
@@ -19,7 +19,6 @@ const TodoItemInfoBox = () => {
   const [isFetching, setIsFetching] = useState(false);
   const [todo, setTodo] = useRecoilState(singleTodoAtom);
   const setNote = useSetRecoilState(todoCreatorAtom);
-  const resetInput = useResetRecoilState(todoCreatorAtom);
   const setAlert = useSetRecoilState(alertAtom);
   const history = useHistory();
 
@@ -49,11 +48,7 @@ const TodoItemInfoBox = () => {
       }
     };
     fetchTodo();
-
-    return () => {
-      resetInput();
-    };
-  }, [resetInput, setNote, id, setTodo, setAlert, history]);
+  }, [setNote, id, setTodo, setAlert, history]);
 
   const handleChangeStatus = () => {
     setTodo((prevState) => ({ ...prevState, completed: !prevState.completed }));

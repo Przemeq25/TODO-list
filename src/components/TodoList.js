@@ -1,5 +1,5 @@
-import { Box, Flex, Heading, Spinner } from '@theme-ui/components';
 import React, { useEffect, useState } from 'react';
+import { Box, Flex, Heading, Spinner } from '@theme-ui/components';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import TodoItem from './TodoItem';
 import {
@@ -48,15 +48,13 @@ const TodoList = () => {
     );
 
   return (
-    <>
-      <Box as="ul" sx={{ listStyle: 'none', pl: 0 }}>
-        {todoList.map((item) =>
-          !item.completed || showCompleted ? (
-            <TodoItem {...item} key={item.id} />
-          ) : null
-        )}
-      </Box>
-    </>
+    <Box as="ul" sx={{ listStyle: 'none', pl: 0 }}>
+      {todoList.map((item) =>
+        !item.completed || showCompleted ? (
+          <TodoItem {...item} key={item.id} />
+        ) : null
+      )}
+    </Box>
   );
 };
 

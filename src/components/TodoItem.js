@@ -14,6 +14,7 @@ import { alertAtom, todoListAtom } from '../atoms';
 import { deleteTodo, updateTodo } from '../services/todos';
 import { useHistory } from 'react-router-dom';
 import { replaceArrayItem } from '../utils/replaceArrayItem';
+import PropTypes from 'prop-types';
 
 const TodoItem = ({ id, title, completed }) => {
   const setNewTodos = useSetRecoilState(todoListAtom);
@@ -113,3 +114,8 @@ const TodoItem = ({ id, title, completed }) => {
 };
 
 export default TodoItem;
+TodoItem.propTypes = {
+  id: PropTypes.number.isRequired,
+  title: PropTypes.string.isRequired,
+  completed: PropTypes.bool.isRequired,
+};

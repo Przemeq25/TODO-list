@@ -1,5 +1,6 @@
-import { Flex, Heading, Paragraph } from '@theme-ui/components';
 import React from 'react';
+import PropTypes from 'prop-types';
+import { Flex, Heading, Paragraph } from '@theme-ui/components';
 
 const HeaderContent = ({ edit }) => {
   return (
@@ -13,3 +14,11 @@ const HeaderContent = ({ edit }) => {
 };
 
 export default HeaderContent;
+
+HeaderContent.propTypes = {
+  edit: PropTypes.bool,
+};
+
+HeaderContent.defaultProps = {
+  edit: false,
+};

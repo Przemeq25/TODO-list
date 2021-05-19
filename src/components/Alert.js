@@ -1,5 +1,5 @@
-import { Close, Alert as AlertBox } from '@theme-ui/components';
 import React, { useEffect } from 'react';
+import { Close, Alert as AlertBox } from '@theme-ui/components';
 import { useRecoilValue, useResetRecoilState } from 'recoil';
 import { alertAtom } from '../atoms';
 

@@ -1,5 +1,6 @@
+import React, { useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { Box, Button, Flex, Paragraph, Textarea } from '@theme-ui/components';
-import React from 'react';
 import { useHistory } from 'react-router';
 import {
   selector,
@@ -34,6 +35,12 @@ const TodoCreator = ({ edit }) => {
   const setAlert = useSetRecoilState(alertAtom);
   const history = useHistory();
 
+  useEffect(() => {
+    return () => {
+      resetInput();
+    };
+  }, [resetInput]);
+
   const addTodo = async (title) => {
     if (title) {
       try {
@@ -49,6 +56,9 @@ const TodoCreator = ({ edit }) => {
             type: 'success',
           });
         } else if (code === 422) {
+          if (data[0].field === 'title') {
+            throw new Error('Note is too long (maximum is 200 characters)');
+          }
           throw new Error('User dont exists, change id in config.js file');
         } else {
           throw new Error(`Ups... ${data.message}. Try again or refresh page`);
@@ -143,3 +153,11 @@ const TodoCreator = ({ edit }) => {
 };
 
 export default TodoCreator;
+
+TodoCreator.propTypes = {
+  edit: PropTypes.bool,
+};
+
+TodoCreator.defaultProps = {
+  edit: false,
+};

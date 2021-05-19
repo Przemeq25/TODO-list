@@ -1,5 +1,6 @@
-import { Box, Close } from '@theme-ui/components';
 import React from 'react';
+import PropTypes from 'prop-types';
+import { Box, Close } from '@theme-ui/components';
 import { useHistory } from 'react-router';
 import HeaderContent from './HeaderContent';
 
@@ -25,3 +26,11 @@ const HeaderWrapper = ({ edit, children }) => {
 };
 
 export default HeaderWrapper;
+HeaderWrapper.propTypes = {
+  edit: PropTypes.bool,
+  children: PropTypes.node,
+};
+
+HeaderWrapper.defaultProps = {
+  edit: false,
+};

@@ -40,7 +40,6 @@ export const alertAtom = atom({
   default: {
     isOpen: false,
     text: '',
-    close: false,
     timeout: 2000,
     type: 'success',
   },
